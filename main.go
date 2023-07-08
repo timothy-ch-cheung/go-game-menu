@@ -15,11 +15,11 @@ const (
 	screenHeight = 480
 )
 
-type Game struct{
+type Game struct {
 	ui *ebitenui.UI
 }
 
-func createCenteredButton(res *UIResources, text string) (*widget.Container) {
+func createCenteredButton(res *UIResources, text string) *widget.Container {
 	btnContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
@@ -44,10 +44,10 @@ func titleScreenContainer(res *UIResources, ui func() *ebitenui.UI) widget.Prefe
 	container := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.6,},),
+			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.6}),
 		),
 		),
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true,})),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
 	)
 
 	container.AddChild(createCenteredButton(res, "Story"))
@@ -67,7 +67,7 @@ func createUI() (*ebitenui.UI, func(), error) {
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
 			Top:    20,
 			Bottom: 20,
-		},))),
+		}))),
 
 		widget.ContainerOpts.BackgroundImage(res.background))
 
@@ -96,7 +96,6 @@ func (game *Game) Draw(screen *ebiten.Image) {
 	msg := fmt.Sprintf("FPS: %0.2f", ebiten.ActualFPS())
 	ebitenutil.DebugPrint(screen, msg)
 }
-
 
 func (game *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight

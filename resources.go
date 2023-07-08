@@ -25,8 +25,8 @@ type ButtonResources struct {
 
 type UIResources struct {
 	background *image.NineSlice
-	fonts *fonts
-	button      *ButtonResources
+	fonts      *fonts
+	button     *ButtonResources
 }
 
 func (res *UIResources) close() {
@@ -86,9 +86,9 @@ func loadButtonResources(fonts *fonts) (*ButtonResources, error) {
 		face: fonts.face,
 
 		padding: widget.Insets{
-			Left:  30,
-			Right: 30,
-			Top: 10,
+			Left:   30,
+			Right:  30,
+			Top:    10,
 			Bottom: 10,
 		},
 	}, nil
@@ -109,7 +109,7 @@ func loadUIResources() (*UIResources, error) {
 
 	return &UIResources{
 		background: background,
-		fonts: fonts,
-		button: button,
+		fonts:      fonts,
+		button:     button,
 	}, nil
 }

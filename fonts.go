@@ -10,8 +10,8 @@ const (
 )
 
 type fonts struct {
-	face         font.Face
-	smallFace    font.Face
+	face      font.Face
+	smallFace font.Face
 }
 
 func (f *fonts) close() {
@@ -50,7 +50,7 @@ func loadFonts() (*fonts, error) {
 	smallFontFace, err := loadFont(fontFace, 12)
 
 	return &fonts{
-		face:         regularfontFace,
-		smallFace:    smallFontFace,
+		face:      regularfontFace,
+		smallFace: smallFontFace,
 	}, nil
 }
