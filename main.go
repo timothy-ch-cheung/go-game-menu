@@ -19,24 +19,40 @@ type Game struct{
 	ui *ebitenui.UI
 }
 
-func createButton(res *UIResources, text string) (*widget.Button) {
-	return widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{
-			Stretch: false,
+func createCenteredButton(res *UIResources, text string) (*widget.Container) {
+	btnContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
+		widget.ContainerOpts.BackgroundImage(res.background),
+	)
+
+	btn := widget.NewButton(
+		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
 		})),
 		widget.ButtonOpts.Image(res.button.image),
 		widget.ButtonOpts.Text(text, res.button.face, res.button.text),
 		widget.ButtonOpts.TextPadding(res.button.padding),
 	)
+
+	btnContainer.AddChild(btn)
+
+	return btnContainer
 }
 
 func titleScreenContainer(res *UIResources, ui func() *ebitenui.UI) widget.PreferredSizeLocateableWidget {
 	container := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(widget.RowLayoutOpts.Direction(widget.DirectionVertical))))
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.6,},),
+		),
+		),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true,})),
+	)
 
-	container.AddChild(createButton(res, "Story"))
-	container.AddChild(createButton(res, "Arcade"))
-	container.AddChild(createButton(res, "Options"))
+	container.AddChild(createCenteredButton(res, "Story"))
+	container.AddChild(createCenteredButton(res, "Arcade"))
+	container.AddChild(createCenteredButton(res, "Options"))
 
 	return container
 }
@@ -48,14 +64,10 @@ func createUI() (*ebitenui.UI, func(), error) {
 	}
 
 	rootContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewGridLayout(
-			widget.GridLayoutOpts.Columns(1),
-			widget.GridLayoutOpts.Stretch([]bool{true}, []bool{false, true, false}),
-			widget.GridLayoutOpts.Padding(widget.Insets{
-				Top:    20,
-				Bottom: 20,
-			}),
-			widget.GridLayoutOpts.Spacing(0, 20))),
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout(widget.AnchorLayoutOpts.Padding(widget.Insets{
+			Top:    20,
+			Bottom: 20,
+		},))),
 
 		widget.ContainerOpts.BackgroundImage(res.background))
 
