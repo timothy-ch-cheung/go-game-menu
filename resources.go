@@ -24,6 +24,7 @@ type ButtonResources struct {
 }
 
 type TextResources struct {
+	smallFace font.Face
 	titleFace font.Face
 }
 
@@ -36,13 +37,20 @@ type PanelResources struct {
 	padding widget.Insets
 }
 
+type CheckboxResources struct {
+	image   *widget.ButtonImage
+	graphic *widget.CheckboxGraphicImage
+	spacing int
+}
+
 type UIResources struct {
 	background *image.NineSlice
 	fonts      *fonts
 	button     *ButtonResources
 	text       *TextResources
-	colour     ColourResourses
-	panel      PanelResources
+	colour     *ColourResourses
+	panel      *PanelResources
+	checkbox   *CheckboxResources
 }
 
 func (res *UIResources) close() {
@@ -132,6 +140,55 @@ func loadPanelResources() (*PanelResources, error) {
 	}, nil
 }
 
+func loadCheckboxResources() (*CheckboxResources, error) {
+	idle, err := loadImageNineSlice("assets/graphics/checkbox-idle.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	hover, err := loadImageNineSlice("assets/graphics/checkbox-hover.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	disabled, err := loadImageNineSlice("assets/graphics/checkbox-disabled.png", 20, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	checked, err := loadGraphicImages("assets/graphics/checkbox-checked-idle.png", "assets/graphics/checkbox-checked-disabled.png")
+	if err != nil {
+		return nil, err
+	}
+
+	unchecked, err := loadGraphicImages("assets/graphics/checkbox-unchecked-idle.png", "assets/graphics/checkbox-unchecked-disabled.png")
+	if err != nil {
+		return nil, err
+	}
+
+	greyed, err := loadGraphicImages("assets/graphics/checkbox-greyed-idle.png", "assets/graphics/checkbox-greyed-disabled.png")
+	if err != nil {
+		return nil, err
+	}
+
+	return &CheckboxResources{
+		image: &widget.ButtonImage{
+			Idle:     idle,
+			Hover:    hover,
+			Pressed:  hover,
+			Disabled: disabled,
+		},
+
+		graphic: &widget.CheckboxGraphicImage{
+			Checked:   checked,
+			Unchecked: unchecked,
+			Greyed:    greyed,
+		},
+
+		spacing: 10,
+	}, nil
+}
+
 func loadUIResources() (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColour))
 	colours := *loadColourResources()
@@ -147,10 +204,16 @@ func loadUIResources() (*UIResources, error) {
 	}
 
 	text := TextResources{
+		smallFace: fonts.smallFace,
 		titleFace: fonts.titleFace,
 	}
 
 	panel, err := loadPanelResources()
+	if err != nil {
+		return nil, err
+	}
+
+	checkbox, err := loadCheckboxResources()
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +223,8 @@ func loadUIResources() (*UIResources, error) {
 		fonts:      fonts,
 		button:     button,
 		text:       &text,
-		colour:     colours,
-		panel:      *panel,
+		colour:     &colours,
+		panel:      panel,
+		checkbox:   checkbox,
 	}, nil
 }
