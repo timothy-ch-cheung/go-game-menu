@@ -23,10 +23,20 @@ type ButtonResources struct {
 	padding widget.Insets
 }
 
+type TextResources struct {
+	titleFace font.Face
+}
+
+type ColourResourses struct {
+	teal color.Color
+}
+
 type UIResources struct {
 	background *image.NineSlice
 	fonts      *fonts
 	button     *ButtonResources
+	text       *TextResources
+	colour     ColourResourses
 }
 
 func (res *UIResources) close() {
@@ -44,6 +54,12 @@ func hexToColor(hex string) color.Color {
 		G: uint8(u & 0xff00 >> 8),
 		B: uint8(u & 0xff),
 		A: 255,
+	}
+}
+
+func loadColourResources() *ColourResourses {
+	return &ColourResourses{
+		teal: hexToColor("008080"),
 	}
 }
 
@@ -96,6 +112,7 @@ func loadButtonResources(fonts *fonts) (*ButtonResources, error) {
 
 func loadUIResources() (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColour))
+	colours := *loadColourResources()
 
 	fonts, err := loadFonts()
 	if err != nil {
@@ -107,9 +124,15 @@ func loadUIResources() (*UIResources, error) {
 		return nil, err
 	}
 
+	text := TextResources{
+		titleFace: fonts.titleFace,
+	}
+
 	return &UIResources{
 		background: background,
 		fonts:      fonts,
 		button:     button,
+		text:       &text,
+		colour:     colours,
 	}, nil
 }

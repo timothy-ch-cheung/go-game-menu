@@ -23,7 +23,6 @@ func createCenteredButton(res *UIResources, text string) *widget.Container {
 	btnContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
-		widget.ContainerOpts.BackgroundImage(res.background),
 	)
 
 	btn := widget.NewButton(
@@ -41,20 +40,43 @@ func createCenteredButton(res *UIResources, text string) *widget.Container {
 }
 
 func titleScreenContainer(res *UIResources, ui func() *ebitenui.UI) widget.PreferredSizeLocateableWidget {
-	container := widget.NewContainer(
+	titleScreenContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.6}),
 		),
 		),
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
 	)
 
-	container.AddChild(createCenteredButton(res, "Story"))
-	container.AddChild(createCenteredButton(res, "Arcade"))
-	container.AddChild(createCenteredButton(res, "Options"))
+	titleContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout(
+			widget.AnchorLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.2}),
+		)),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
+	)
+	title := widget.NewText(
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
+		})),
+		widget.TextOpts.Text("Demo Game", res.text.titleFace, res.colour.teal))
+	titleContainer.AddChild(title)
+	titleScreenContainer.AddChild(titleContainer)
 
-	return container
+	btnContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.25}),
+		),
+		),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
+	)
+
+	btnContainer.AddChild(createCenteredButton(res, "Story"))
+	btnContainer.AddChild(createCenteredButton(res, "Arcade"))
+	btnContainer.AddChild(createCenteredButton(res, "Options"))
+
+	titleScreenContainer.AddChild(btnContainer)
+	return titleScreenContainer
 }
 
 func createUI() (*ebitenui.UI, func(), error) {

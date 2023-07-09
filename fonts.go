@@ -12,6 +12,7 @@ const (
 type fonts struct {
 	face      font.Face
 	smallFace font.Face
+	titleFace font.Face
 }
 
 func (f *fonts) close() {
@@ -42,15 +43,24 @@ func loadFont(path string, size float64) (font.Face, error) {
 }
 
 func loadFonts() (*fonts, error) {
+	smallFontFace, err := loadFont(fontFace, 12)
+	if err != nil {
+		return nil, err
+	}
+
 	regularfontFace, err := loadFont(fontFace, 16)
 	if err != nil {
 		return nil, err
 	}
 
-	smallFontFace, err := loadFont(fontFace, 12)
+	titlefontFace, err := loadFont(fontFace, 48)
+	if err != nil {
+		return nil, err
+	}
 
 	return &fonts{
-		face:      regularfontFace,
 		smallFace: smallFontFace,
+		face:      regularfontFace,
+		titleFace: titlefontFace,
 	}, nil
 }
