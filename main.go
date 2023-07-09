@@ -19,6 +19,16 @@ type Game struct {
 	ui *ebitenui.UI
 }
 
+type Screen int
+
+type SwitchScreenFunc func(Screen)
+
+const (
+	Title   Screen = 0
+	Arcade  Screen = 1
+	Options Screen = 2
+)
+
 func createUI() (*ebitenui.UI, func(), error) {
 	res, err := loadUIResources()
 	if err != nil {
@@ -44,7 +54,23 @@ func createUI() (*ebitenui.UI, func(), error) {
 		Container: rootContainer,
 	}
 
-	titleScreen := titleScreenContainer(res)
+	var titleScreen, arcadeScreen, optionsScreen widget.PreferredSizeLocateableWidget
+
+	switchScreen := func(screen Screen) {
+		switch screen {
+		case Title:
+			flipBook.SetPage(titleScreen)
+		case Arcade:
+			flipBook.SetPage(arcadeScreen)
+		case Options:
+			flipBook.SetPage(optionsScreen)
+		}
+	}
+
+	titleScreen = titleScreenContainer(res, switchScreen)
+	arcadeScreen = arcadeScreenContainer(res, switchScreen)
+	optionsScreen = optionsScreenContainer(res, switchScreen)
+
 	flipBook.SetPage(titleScreen)
 
 	return ui, func() {

@@ -4,7 +4,7 @@ import (
 	"github.com/ebitenui/ebitenui/widget"
 )
 
-func createCenteredButton(res *UIResources, text string, disabled bool) *widget.Container {
+func createCenteredButton(res *UIResources, text string, disabled bool, handler widget.ButtonClickedHandlerFunc) *widget.Container {
 	btnContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
@@ -17,6 +17,7 @@ func createCenteredButton(res *UIResources, text string, disabled bool) *widget.
 		widget.ButtonOpts.Image(res.button.image),
 		widget.ButtonOpts.Text(text, res.button.face, res.button.text),
 		widget.ButtonOpts.TextPadding(res.button.padding),
+		widget.ButtonOpts.ClickedHandler(handler),
 	)
 	btn.GetWidget().Disabled = disabled
 
@@ -25,7 +26,7 @@ func createCenteredButton(res *UIResources, text string, disabled bool) *widget.
 	return btnContainer
 }
 
-func titleScreenContainer(res *UIResources) widget.PreferredSizeLocateableWidget {
+func titleScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) widget.PreferredSizeLocateableWidget {
 	titleScreenContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
@@ -57,18 +58,40 @@ func titleScreenContainer(res *UIResources) widget.PreferredSizeLocateableWidget
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
 	)
 
-	btnContainer.AddChild(createCenteredButton(res, "Story", true))
-	btnContainer.AddChild(createCenteredButton(res, "Arcade", false))
-	btnContainer.AddChild(createCenteredButton(res, "Options", false))
+	btnContainer.AddChild(createCenteredButton(res, "Story", true, func(args *widget.ButtonClickedEventArgs) {}))
+	btnContainer.AddChild(createCenteredButton(res, "Arcade", false, func(args *widget.ButtonClickedEventArgs) { switchScreen(Arcade) }))
+	btnContainer.AddChild(createCenteredButton(res, "Options", false, func(args *widget.ButtonClickedEventArgs) { switchScreen(Options) }))
 
 	titleScreenContainer.AddChild(btnContainer)
 	return titleScreenContainer
 }
 
-func arcadeScreen(res *UIResources) widget.PreferredSizeLocateableWidget {
-	return widget.NewContainer()
+func arcadeScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) widget.PreferredSizeLocateableWidget {
+	arcadeContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
+	)
+	title := widget.NewText(
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
+		})),
+		widget.TextOpts.Text("Arcade Page", res.text.titleFace, res.colour.teal))
+	arcadeContainer.AddChild(title)
+
+	return arcadeContainer
 }
 
-func optionsScreen(res *UIResources) widget.PreferredSizeLocateableWidget {
-	return widget.NewContainer()
+func optionsScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) widget.PreferredSizeLocateableWidget {
+	optionsContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
+	)
+	title := widget.NewText(
+		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
+			HorizontalPosition: widget.AnchorLayoutPositionCenter,
+		})),
+		widget.TextOpts.Text("Options Page", res.text.titleFace, res.colour.teal))
+	optionsContainer.AddChild(title)
+
+	return optionsContainer
 }
