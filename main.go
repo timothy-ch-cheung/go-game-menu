@@ -44,7 +44,7 @@ func createUI() (*ebitenui.UI, func(), error) {
 		widget.ContainerOpts.BackgroundImage(res.background))
 
 	flipBook := widget.NewFlipBook(widget.FlipBookOpts.ContainerOpts(
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true, StretchVertical: true})),
 	))
 	rootContainer.AddChild(flipBook)
 

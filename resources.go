@@ -31,12 +31,18 @@ type ColourResourses struct {
 	teal color.Color
 }
 
+type PanelResources struct {
+	image   *image.NineSlice
+	padding widget.Insets
+}
+
 type UIResources struct {
 	background *image.NineSlice
 	fonts      *fonts
 	button     *ButtonResources
 	text       *TextResources
 	colour     ColourResourses
+	panel      PanelResources
 }
 
 func (res *UIResources) close() {
@@ -109,6 +115,23 @@ func loadButtonResources(fonts *fonts) (*ButtonResources, error) {
 	}, nil
 }
 
+func loadPanelResources() (*PanelResources, error) {
+	img, err := loadImageNineSlice("assets/graphics/panel-idle.png", 48, 48)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PanelResources{
+		image: img,
+		padding: widget.Insets{
+			Top:    20,
+			Bottom: 20,
+			Left:   20,
+			Right:  20,
+		},
+	}, nil
+}
+
 func loadUIResources() (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColour))
 	colours := *loadColourResources()
@@ -127,11 +150,17 @@ func loadUIResources() (*UIResources, error) {
 		titleFace: fonts.titleFace,
 	}
 
+	panel, err := loadPanelResources()
+	if err != nil {
+		return nil, err
+	}
+
 	return &UIResources{
 		background: background,
 		fonts:      fonts,
 		button:     button,
 		text:       &text,
 		colour:     colours,
+		panel:      *panel,
 	}, nil
 }
