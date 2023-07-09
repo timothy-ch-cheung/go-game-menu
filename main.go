@@ -39,7 +39,7 @@ func createCenteredButton(res *UIResources, text string) *widget.Container {
 	return btnContainer
 }
 
-func titleScreenContainer(res *UIResources, ui func() *ebitenui.UI) widget.PreferredSizeLocateableWidget {
+func titleScreenContainer(res *UIResources) widget.PreferredSizeLocateableWidget {
 	titleScreenContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
@@ -99,9 +99,7 @@ func createUI() (*ebitenui.UI, func(), error) {
 		Container: rootContainer,
 	}
 
-	rootContainer.AddChild(titleScreenContainer(res, func() *ebitenui.UI {
-		return ui
-	}))
+	rootContainer.AddChild(titleScreenContainer(res))
 
 	return ui, func() {
 		res.close()

@@ -84,11 +84,10 @@ func loadButtonResources(fonts *fonts) (*ButtonResources, error) {
 	}
 
 	img := &widget.ButtonImage{
-		Idle:         idle,
-		Hover:        hover,
-		Pressed:      pressed,
-		PressedHover: hover,
-		Disabled:     disabled,
+		Idle:     idle,
+		Hover:    hover,
+		Pressed:  pressed,
+		Disabled: disabled,
 	}
 
 	return &ButtonResources{
