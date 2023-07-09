@@ -19,65 +19,15 @@ type Game struct {
 	ui *ebitenui.UI
 }
 
-func createCenteredButton(res *UIResources, text string) *widget.Container {
-	btnContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
-	)
+type Screen int
 
-	btn := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-		})),
-		widget.ButtonOpts.Image(res.button.image),
-		widget.ButtonOpts.Text(text, res.button.face, res.button.text),
-		widget.ButtonOpts.TextPadding(res.button.padding),
-	)
+type SwitchScreenFunc func(Screen)
 
-	btnContainer.AddChild(btn)
-
-	return btnContainer
-}
-
-func titleScreenContainer(res *UIResources) widget.PreferredSizeLocateableWidget {
-	titleScreenContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-		),
-		),
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
-	)
-
-	titleContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewAnchorLayout(
-			widget.AnchorLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.2}),
-		)),
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
-	)
-	title := widget.NewText(
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-		})),
-		widget.TextOpts.Text("Demo Game", res.text.titleFace, res.colour.teal))
-	titleContainer.AddChild(title)
-	titleScreenContainer.AddChild(titleContainer)
-
-	btnContainer := widget.NewContainer(
-		widget.ContainerOpts.Layout(widget.NewRowLayout(
-			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.Insets{Top: screenHeight * 0.25}),
-		),
-		),
-		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.RowLayoutData{Stretch: true})),
-	)
-
-	btnContainer.AddChild(createCenteredButton(res, "Story"))
-	btnContainer.AddChild(createCenteredButton(res, "Arcade"))
-	btnContainer.AddChild(createCenteredButton(res, "Options"))
-
-	titleScreenContainer.AddChild(btnContainer)
-	return titleScreenContainer
-}
+const (
+	Title   Screen = 0
+	Arcade  Screen = 1
+	Options Screen = 2
+)
 
 func createUI() (*ebitenui.UI, func(), error) {
 	res, err := loadUIResources()
@@ -93,13 +43,35 @@ func createUI() (*ebitenui.UI, func(), error) {
 
 		widget.ContainerOpts.BackgroundImage(res.background))
 
+	flipBook := widget.NewFlipBook(widget.FlipBookOpts.ContainerOpts(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true, StretchVertical: true})),
+	))
+	rootContainer.AddChild(flipBook)
+
 	var ui *ebitenui.UI
 
 	ui = &ebitenui.UI{
 		Container: rootContainer,
 	}
 
-	rootContainer.AddChild(titleScreenContainer(res))
+	var titleScreen, arcadeScreen, optionsScreen widget.PreferredSizeLocateableWidget
+
+	switchScreen := func(screen Screen) {
+		switch screen {
+		case Title:
+			flipBook.SetPage(titleScreen)
+		case Arcade:
+			flipBook.SetPage(arcadeScreen)
+		case Options:
+			flipBook.SetPage(optionsScreen)
+		}
+	}
+
+	titleScreen = titleScreenContainer(res, switchScreen)
+	arcadeScreen = arcadeScreenContainer(res, switchScreen)
+	optionsScreen = optionsScreenContainer(res, switchScreen)
+
+	flipBook.SetPage(titleScreen)
 
 	return ui, func() {
 		res.close()
