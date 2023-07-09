@@ -93,13 +93,19 @@ func createUI() (*ebitenui.UI, func(), error) {
 
 		widget.ContainerOpts.BackgroundImage(res.background))
 
+	flipBook := widget.NewFlipBook(widget.FlipBookOpts.ContainerOpts(
+		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
+	))
+	rootContainer.AddChild(flipBook)
+
 	var ui *ebitenui.UI
 
 	ui = &ebitenui.UI{
 		Container: rootContainer,
 	}
 
-	rootContainer.AddChild(titleScreenContainer(res))
+	titleScreen := titleScreenContainer(res)
+	flipBook.SetPage(titleScreen)
 
 	return ui, func() {
 		res.close()
