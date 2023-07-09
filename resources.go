@@ -64,21 +64,21 @@ func loadColourResources() *ColourResourses {
 }
 
 func loadButtonResources(fonts *fonts) (*ButtonResources, error) {
-	idle, err := loadImageNineSlice("assets/graphics/button-idle.png", 12, 0)
+	idle, err := loadImageNineSlice("assets/graphics/button-idle.png", 34, 20)
 	if err != nil {
 		return nil, err
 	}
 
-	hover, err := loadImageNineSlice("assets/graphics/button-hover.png", 12, 0)
+	hover, err := loadImageNineSlice("assets/graphics/button-hover.png", 34, 20)
 	if err != nil {
 		return nil, err
 	}
-	pressed, err := loadImageNineSlice("assets/graphics/button-pressed.png", 12, 0)
+	pressed, err := loadImageNineSlice("assets/graphics/button-pressed.png", 34, 20)
 	if err != nil {
 		return nil, err
 	}
 
-	disabled, err := loadImageNineSlice("assets/graphics/button-disabled.png", 12, 0)
+	disabled, err := loadImageNineSlice("assets/graphics/button-disabled.png", 34, 20)
 	if err != nil {
 		return nil, err
 	}
