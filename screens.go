@@ -94,12 +94,6 @@ func arcadeScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) widg
 		)),
 		widget.ContainerOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{StretchHorizontal: true})),
 	)
-	title := widget.NewText(
-		widget.TextOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-			HorizontalPosition: widget.AnchorLayoutPositionCenter,
-		})),
-		widget.TextOpts.Text("Arcade Page", res.text.titleFace, res.colour.teal))
-	arcadeContainer.AddChild(title)
 
 	backBtn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
