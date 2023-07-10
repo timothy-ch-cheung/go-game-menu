@@ -155,7 +155,7 @@ func optionsScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) wid
 	)))
 	volumeSlider := widget.NewSlider(
 		widget.SliderOpts.WidgetOpts(widget.WidgetOpts.MinSize(250, 10)),
-		widget.SliderOpts.MinMax(1, 100),
+		widget.SliderOpts.MinMax(0, 100),
 		widget.SliderOpts.Images(res.slider.trackImage, res.slider.handle),
 		widget.SliderOpts.FixedHandleSize(res.slider.handleSize),
 		widget.SliderOpts.TrackOffset(5),
@@ -163,6 +163,7 @@ func optionsScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) wid
 			volumeText.Label = fmt.Sprintf("Volume: %d", args.Current)
 		}),
 	)
+	volumeSlider.Current = 50
 	volumeContainer.AddChild(volumeSlider)
 	volumeText = widget.NewLabel(
 		widget.LabelOpts.Text(fmt.Sprintf("Volume: %d", volumeSlider.Current), res.text.smallFace, getLabelColour(res.colour.teal)),

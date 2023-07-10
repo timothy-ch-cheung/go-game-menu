@@ -32,7 +32,7 @@ const (
 
 var currentScreen Screen = Title
 
-func createUI() (*ebitenui.UI, func(), error) {
+func createUI(char *character, onScreenChanged func(Screen, *character)) (*ebitenui.UI, func(), error) {
 	res, err := loadUIResources()
 	if err != nil {
 		return nil, nil, err
@@ -60,7 +60,7 @@ func createUI() (*ebitenui.UI, func(), error) {
 	var titleScreen, arcadeScreen, optionsScreen widget.PreferredSizeLocateableWidget
 
 	switchScreen := func(screen Screen) {
-		currentScreen = screen
+		onScreenChanged(screen, char)
 		switch screen {
 		case Title:
 			flipBook.SetPage(titleScreen)
@@ -112,12 +112,24 @@ func main() {
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Game Menu Demo")
 
-	ui, closeUI, err := createUI()
+	arrow, err := createArrow()
+
+	onScreenChanged := func(screen Screen, char *character) {
+		currentScreen = screen
+		switch screen {
+		case Arcade:
+			{
+				char.x = screenWidth / 2
+				char.y = screenHeight / 2
+				char.dir = up
+			}
+		}
+	}
+
+	ui, closeUI, err := createUI(arrow, onScreenChanged)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	arrow, err := createArrow()
 
 	defer closeUI()
 
