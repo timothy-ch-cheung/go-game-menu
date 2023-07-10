@@ -16,7 +16,8 @@ const (
 )
 
 type Game struct {
-	ui *ebitenui.UI
+	ui    *ebitenui.UI
+	arrow *ebiten.Image
 }
 
 type Screen int
@@ -28,6 +29,8 @@ const (
 	Arcade  Screen = 1
 	Options Screen = 2
 )
+
+var currentScreen Screen = Title
 
 func createUI() (*ebitenui.UI, func(), error) {
 	res, err := loadUIResources()
@@ -57,6 +60,7 @@ func createUI() (*ebitenui.UI, func(), error) {
 	var titleScreen, arcadeScreen, optionsScreen widget.PreferredSizeLocateableWidget
 
 	switchScreen := func(screen Screen) {
+		currentScreen = screen
 		switch screen {
 		case Title:
 			flipBook.SetPage(titleScreen)
@@ -78,6 +82,12 @@ func createUI() (*ebitenui.UI, func(), error) {
 	}, nil
 }
 
+func drawArcade(screen *ebiten.Image, game *Game) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(screenWidth/2, screenHeight/2)
+	screen.DrawImage(game.arrow, op)
+}
+
 func (game *Game) Update() error {
 	game.ui.Update()
 	return nil
@@ -87,6 +97,11 @@ func (game *Game) Draw(screen *ebiten.Image) {
 	game.ui.Draw(screen)
 	msg := fmt.Sprintf("FPS: %0.2f", ebiten.ActualFPS())
 	ebitenutil.DebugPrint(screen, msg)
+
+	switch currentScreen {
+	case Arcade:
+		drawArcade(screen, game)
+	}
 }
 
 func (game *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -102,9 +117,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	arrow, err := newImageFromFile("assets/graphics/arrow.png")
+
 	defer closeUI()
 
-	if err := ebiten.RunGame(&Game{ui: ui}); err != nil {
+	if err := ebiten.RunGame(&Game{ui: ui, arrow: arrow}); err != nil {
 		log.Fatal(err)
 	}
 }
