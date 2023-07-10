@@ -43,6 +43,12 @@ type CheckboxResources struct {
 	spacing int
 }
 
+type SliderResources struct {
+	trackImage *widget.SliderTrackImage
+	handle     *widget.ButtonImage
+	handleSize int
+}
+
 type UIResources struct {
 	background *image.NineSlice
 	fonts      *fonts
@@ -51,6 +57,7 @@ type UIResources struct {
 	colour     *ColourResourses
 	panel      *PanelResources
 	checkbox   *CheckboxResources
+	slider     *SliderResources
 }
 
 func (res *UIResources) close() {
@@ -189,6 +196,50 @@ func loadCheckboxResources() (*CheckboxResources, error) {
 	}, nil
 }
 
+func loadSliderResources() (*SliderResources, error) {
+	idle, err := newImageFromFile("assets/graphics/slider-track-idle.png")
+	if err != nil {
+		return nil, err
+	}
+
+	disabled, err := newImageFromFile("assets/graphics/slider-track-disabled.png")
+	if err != nil {
+		return nil, err
+	}
+
+	handleIdle, err := newImageFromFile("assets/graphics/slider-handle-idle.png")
+	if err != nil {
+		return nil, err
+	}
+
+	handleHover, err := newImageFromFile("assets/graphics/slider-handle-hover.png")
+	if err != nil {
+		return nil, err
+	}
+
+	handleDisabled, err := newImageFromFile("assets/graphics/slider-handle-disabled.png")
+	if err != nil {
+		return nil, err
+	}
+
+	return &SliderResources{
+		trackImage: &widget.SliderTrackImage{
+			Idle:     image.NewNineSlice(idle, [3]int{0, 30, 0}, [3]int{8, 0, 0}),
+			Hover:    image.NewNineSlice(idle, [3]int{0, 30, 0}, [3]int{8, 0, 0}),
+			Disabled: image.NewNineSlice(disabled, [3]int{0, 30, 0}, [3]int{8, 0, 0}),
+		},
+
+		handle: &widget.ButtonImage{
+			Idle:     image.NewNineSliceSimple(handleIdle, 5, 8),
+			Hover:    image.NewNineSliceSimple(handleHover, 5, 8),
+			Pressed:  image.NewNineSliceSimple(handleHover, 5, 8),
+			Disabled: image.NewNineSliceSimple(handleDisabled, 5, 8),
+		},
+
+		handleSize: 6,
+	}, nil
+}
+
 func loadUIResources() (*UIResources, error) {
 	background := image.NewNineSliceColor(hexToColor(backgroundColour))
 	colours := *loadColourResources()
@@ -218,6 +269,11 @@ func loadUIResources() (*UIResources, error) {
 		return nil, err
 	}
 
+	slider, err := loadSliderResources()
+	if err != nil {
+		return nil, err
+	}
+
 	return &UIResources{
 		background: background,
 		fonts:      fonts,
@@ -226,5 +282,6 @@ func loadUIResources() (*UIResources, error) {
 		colour:     &colours,
 		panel:      panel,
 		checkbox:   checkbox,
+		slider:     slider,
 	}, nil
 }

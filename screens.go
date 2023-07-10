@@ -4,6 +4,8 @@ import (
 	"image/color"
 
 	"github.com/ebitenui/ebitenui/widget"
+
+	"fmt"
 )
 
 func createCenteredButton(res *UIResources, text string, disabled bool, handler widget.ButtonClickedHandlerFunc) *widget.Container {
@@ -152,6 +154,28 @@ func optionsScreenContainer(res *UIResources, switchScreen SwitchScreenFunc) wid
 	optionsPanel.AddChild(createCheckbox(res, "Setting Beta"))
 	optionsPanel.AddChild(createCheckbox(res, "Setting Gamma"))
 	optionsPanel.AddChild(createCheckbox(res, "Setting Delta"))
+
+	var volumeText *widget.Label
+	volumeContainer := widget.NewContainer(widget.ContainerOpts.Layout(widget.NewRowLayout(
+		widget.RowLayoutOpts.Spacing(10),
+	)))
+	volumeSlider := widget.NewSlider(
+		widget.SliderOpts.WidgetOpts(widget.WidgetOpts.MinSize(250, 10)),
+		widget.SliderOpts.MinMax(1, 100),
+		widget.SliderOpts.Images(res.slider.trackImage, res.slider.handle),
+		widget.SliderOpts.FixedHandleSize(res.slider.handleSize),
+		widget.SliderOpts.TrackOffset(5),
+		widget.SliderOpts.ChangedHandler(func(args *widget.SliderChangedEventArgs) {
+			volumeText.Label = fmt.Sprintf("Volume: %d", args.Current)
+		}),
+	)
+	volumeContainer.AddChild(volumeSlider)
+	volumeText = widget.NewLabel(
+		widget.LabelOpts.Text(fmt.Sprintf("Volume: %d", volumeSlider.Current), res.text.smallFace, getLabelColour(res.colour.teal)),
+	)
+	volumeContainer.AddChild(volumeText)
+
+	optionsPanel.AddChild(volumeContainer)
 
 	return optionsContainer
 }
