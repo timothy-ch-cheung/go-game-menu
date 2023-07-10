@@ -43,7 +43,7 @@ func loadFont(path string, size float64) (font.Face, error) {
 }
 
 func loadFonts() (*fonts, error) {
-	smallFontFace, err := loadFont(fontFace, 12)
+	smallFontFace, err := loadFont(fontFace, 14)
 	if err != nil {
 		return nil, err
 	}
