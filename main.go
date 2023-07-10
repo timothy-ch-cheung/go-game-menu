@@ -17,7 +17,7 @@ const (
 
 type Game struct {
 	ui    *ebitenui.UI
-	arrow *ebiten.Image
+	arrow *character
 }
 
 type Screen int
@@ -82,14 +82,14 @@ func createUI() (*ebitenui.UI, func(), error) {
 	}, nil
 }
 
-func drawArcade(screen *ebiten.Image, game *Game) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(screenWidth/2, screenHeight/2)
-	screen.DrawImage(game.arrow, op)
-}
-
 func (game *Game) Update() error {
 	game.ui.Update()
+
+	switch currentScreen {
+	case Arcade:
+		game.arrow.update()
+	}
+
 	return nil
 }
 
@@ -100,7 +100,7 @@ func (game *Game) Draw(screen *ebiten.Image) {
 
 	switch currentScreen {
 	case Arcade:
-		drawArcade(screen, game)
+		game.arrow.draw(screen)
 	}
 }
 
@@ -117,7 +117,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	arrow, err := newImageFromFile("assets/graphics/arrow.png")
+	arrow, err := createArrow()
 
 	defer closeUI()
 
